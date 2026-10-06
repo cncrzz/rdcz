@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Raizza's Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+/* ===== DESIGN TOKENS (change colors here) ===== */
+:root{
+  --green:#1F4E8C; --gold:#FFCC00; --cream:#FBF3E6; --dark:#1C1713; --white:#fff;
+  --line:rgba(23,26,23,.18); --serif:'Playfair Display',Georgia,serif; --sans:'Inter',system-ui,sans-serif;
+  --gap:clamp(64px,10vw,128px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{font:400 1rem/1.7 var(--sans);background:var(--cream);color:var(--dark)}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+ol,ul{list-style:none}
+.wrap{max-width:1120px;margin:0 auto;padding:var(--gap) 24px}
+.band{padding:0}.band>.wrap{padding-top:var(--gap);padding-bottom:var(--gap)}
+.band{background:#F3E6CF}
+.dark{background:var(--dark);color:var(--cream)}
+h1,h2,h3{font-family:var(--serif);line-height:1.05;font-weight:700}
+h1{font-size:clamp(3rem,8vw,6rem)}
+h1 em{color:var(--green);font-style:italic}
+h2{font-size:clamp(2.2rem,5.5vw,4rem);margin-bottom:40px}
+.label{font-size:.8rem;font-weight:600;color:var(--green);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--line);display:inline-block;min-width:160px}
+.dark .label{color:var(--gold);border-color:rgba(255,255,255,.25)}
+.lead{max-width:56ch;font-size:1.1rem}
+.statement{font:500 clamp(1.3rem,2.4vw,1.8rem)/1.45 var(--serif)}
+
+/* progress + nav */
+#progress{position:fixed;top:0;left:0;height:4px;width:0;background:var(--gold);z-index:60}
+.top{position:fixed;inset:0 0 auto 0;display:flex;justify-content:space-between;align-items:center;padding:16px 24px;z-index:50;background:rgba(251,243,230,.92);border-bottom:1px solid var(--line)}
+.logo{font:700 1.15rem var(--serif);text-decoration:none}
+#menuBtn{font:600 .9rem var(--sans);background:var(--green);color:#fff;border:0;border-radius:999px;padding:10px 20px;cursor:pointer}
+#menuBtn span{display:inline-block;transition:transform .3s;color:var(--gold)}
+#menuBtn[aria-expanded=true] span{transform:rotate(45deg)}
+#menu{position:fixed;inset:0;background:var(--green);z-index:40;display:flex;flex-direction:column;justify-content:center;padding:0 clamp(24px,8vw,120px);clip-path:inset(0 0 100% 0);visibility:hidden;transition:clip-path .5s ease,visibility .5s}
+#menu.open{clip-path:inset(0);visibility:visible}
+#menu a{font:700 clamp(1.8rem,5vw,3.2rem)/1.35 var(--serif);color:var(--cream);text-decoration:none;display:flex;gap:20px;align-items:baseline;transition:color .2s,padding .2s}
+#menu a i{font:500 .9rem var(--sans);color:var(--gold)}
+#menu a:hover{color:var(--gold);padding-left:12px}
+
+/* home */
+.hero{min-height:100vh;display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center;padding-top:120px}
+.roles{margin:24px 0;font-weight:600;border-left:4px solid var(--gold);padding-left:14px}
+.scroll{display:inline-block;margin-top:28px;font-weight:600;text-decoration:none;border-bottom:2px solid var(--gold)}
+.photo{position:relative;justify-self:center;width:min(100%,380px)}
+.photo-frame{aspect-ratio:3/4;border-radius:200px 200px 16px 16px;background:#EBD9BC center/cover;display:grid;place-items:center;color:var(--green);font-weight:600;border:1px solid var(--line);box-shadow:12px 12px 0 var(--gold)}
+.tag{position:absolute;background:var(--white);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:.75rem;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.t1{top:8%;left:-14%}.t2{top:30%;right:-10%;background:var(--gold)}.t3{bottom:22%;left:-18%}.t4{bottom:6%;right:-6%;background:var(--green);color:#fff}
+
+/* purpose */
+.two{display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:start}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:64px;counter-reset:n;border-top:1px solid var(--dark)}
+.trio li{counter-increment:n;padding:24px 24px 0 0}
+.trio li:nth-child(2){margin-top:32px}.trio li:nth-child(3){margin-top:64px}
+.trio li::before{content:counter(n,decimal-leading-zero);display:block;color:var(--green);font-weight:600;margin-bottom:6px}
+.trio b{display:block;font:700 2rem var(--serif)}
+
+/* content index */
+.index a{display:grid;grid-template-columns:60px 1fr 1.4fr;gap:16px;align-items:baseline;padding:20px 8px;border-bottom:1px solid var(--line);text-decoration:none;transition:background .2s,padding .2s}
+.index a:hover{background:var(--gold);padding-left:20px}
+.index i{font-style:normal;color:var(--green);font-weight:600}
+.index b{font:700 clamp(1.5rem,3vw,2.2rem) var(--serif)}
+
+/* education */
+.edu{display:grid;grid-template-columns:1fr 1fr;gap:64px;border-top:1px solid var(--line)}
+.degree{font:700 1.6rem/1.2 var(--serif);margin-bottom:12px}
+.timeline{border-left:2px solid var(--green);padding-left:32px}
+.timeline li{position:relative;padding-bottom:36px}
+.timeline li::before{content:"";position:absolute;left:-42px;top:8px;width:16px;height:16px;border-radius:50%;background:var(--gold);border:2px solid var(--green)}
+.timeline time{font:700 2.2rem var(--serif);color:var(--green)}
+
+/* projects */
+.proj-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:32px}
+.proj{grid-column:span 6;cursor:pointer;background:none;border:0;text-align:left;color:inherit;font:inherit;display:block}
+.proj.big{grid-column:1/-1;display:grid;grid-template-columns:1.4fr 1fr;gap:32px;align-items:end}
+.proj:nth-child(3){grid-column:6/-1;margin-top:48px}
+.shot{aspect-ratio:16/10;border-radius:10px;overflow:hidden;position:relative;background:linear-gradient(135deg,#2F68B0,#173A68);margin-bottom:16px}
+.shot::before{content:"";position:absolute;inset:12% 8%;background:repeating-linear-gradient(#fbf3e622 0 10px,transparent 10px 24px);border:1px solid rgba(255,255,255,.3);border-radius:6px;transition:transform .6s}
+.shot::after{content:"Screenshot of the project";position:absolute;bottom:10px;right:14px;font-size:.7rem;color:var(--gold)}
+.proj:hover .shot::before,.proj:focus-visible .shot::before{transform:scale(1.08)}
+.proj h3{font-size:clamp(1.6rem,3vw,2.4rem);margin-bottom:8px}
+.proj p{opacity:.85;margin-bottom:10px}
+.k{font-size:.75rem;font-weight:600;color:var(--gold);margin-top:6px;display:block}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tags span{font-size:.75rem;border:1px solid currentColor;border-radius:999px;padding:2px 10px}
+
+/* showcase chips */
+.chips{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.chips button,.btn{font:600 .95rem var(--sans);background:var(--green);color:#fff;border:0;border-radius:999px;padding:12px 24px;cursor:pointer;text-decoration:none;display:inline-block;transition:background .2s,color .2s}
+.chips button:hover,.btn:hover{background:var(--gold);color:var(--dark)}
+
+/* design */
+.principles{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin:48px 0;counter-reset:p}
+.principles div{border-top:3px solid var(--green);padding-top:16px;counter-increment:p}
+.principles div::before{content:counter(p,decimal-leading-zero);display:block;color:var(--green);font-weight:600}
+.principles b{display:block;font:700 1.6rem var(--serif)}
+.swatches{display:flex;flex-wrap:wrap;gap:8px}
+.swatches span{padding:10px 16px;border-radius:8px;font-size:.8rem;font-weight:600}
+.swatches .type{font-family:var(--serif);font-size:1rem;border:1px solid var(--line)}
+
+/* tech wall */
+.hint{margin-bottom:24px}
+.wall{display:grid;grid-template-columns:repeat(6,1fr);gap:32px 24px}
+.wall>div:nth-child(1){grid-column:span 3}.wall>div:nth-child(4){grid-column:span 3}
+.wall>div:nth-child(2),.wall>div:nth-child(3),.wall>div:nth-child(5){grid-column:span 2}
+.wall h3{font-size:1.2rem;margin-bottom:12px;color:var(--green)}
+.wall button{font:600 .95rem var(--sans);margin:0 8px 8px 0;padding:10px 18px;border:1.5px solid var(--dark);background:transparent;border-radius:8px;cursor:pointer;transition:transform .2s,background .2s}
+.wall button:hover,.wall button:focus-visible,.wall button.on{background:var(--gold);transform:translateY(-3px) rotate(-1.5deg)}
+.tip{min-height:3em;margin-top:24px;padding:12px 16px;border-left:4px solid var(--gold);background:var(--white)}
+
+/* process */
+.steps{counter-reset:s;position:relative;display:grid;grid-template-columns:repeat(7,1fr);gap:16px;margin-top:24px}
+.steps::before{content:"";position:absolute;top:19px;left:0;right:0;height:2px;background:var(--gold);opacity:.5}
+.steps li{counter-increment:s;position:relative;font-size:.9rem;padding-top:56px}
+.steps li::before{content:counter(s);position:absolute;top:0;left:0;width:40px;height:40px;border-radius:50%;background:var(--gold);color:var(--dark);font-weight:700;display:grid;place-items:center}
+.steps b{display:block;font:700 1.3rem var(--serif);color:var(--gold);margin-bottom:4px}
+
+/* contact + footer */
+.contact li{display:grid;grid-template-columns:140px 1fr;padding:14px 0;border-bottom:1px solid var(--line)}
+.contact li span{color:var(--green);font-weight:600}
+.contact a:not(.btn){font:500 1.3rem var(--serif)}
+.contact .btn{margin-top:40px}
+footer{background:var(--dark);color:var(--cream);display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;padding:32px 24px;font-size:.9rem}
+footer div:last-child{text-align:right}
+
+/* modal case study */
+#modal{position:fixed;inset:0;background:rgba(23,26,23,.7);z-index:70;display:flex;justify-content:flex-end}
+#modal[hidden]{display:none}
+.sheet{width:min(760px,100%);height:100%;overflow-y:auto;background:var(--cream);padding:32px clamp(20px,5vw,56px) 64px;animation:slide .4s ease}
+@keyframes slide{from{transform:translateX(40px);opacity:0}}
+#close{position:sticky;top:0;float:right;font:600 .9rem var(--sans);background:var(--dark);color:#fff;border:0;border-radius:999px;padding:8px 18px;cursor:pointer}
+.cs h2{font-size:clamp(2rem,5vw,3rem);margin:24px 0 16px}
+.cs .shot{margin:16px 0 24px}
+.cs section{display:grid;grid-template-columns:130px 1fr;gap:16px;padding:18px 0;border-top:1px solid var(--line)}
+.cs h4{font:600 .85rem var(--sans);color:var(--green)}
+.cs ul{list-style:disc;padding-left:18px}
+.cs .tags{color:var(--green)}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.85rem;margin-top:10px}
+.flow span{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:4px 10px}
+
+/* scroll reveal */
+.rv{opacity:0;transform:translateY(20px);transition:opacity .7s,transform .7s}
+.rv.in{opacity:1;transform:none}
+
+/* tablet */
+@media(max-width:900px){
+  .hero,.two,.edu,.proj.big{grid-template-columns:1fr}
+  .hero{padding-top:100px}.photo{order:-1;width:min(70%,300px)}
+  .t1{left:-6%}.t3{left:-6%}
+  .proj{grid-column:1/-1}.proj:nth-child(3){grid-column:1/-1;margin-top:0}
+  .principles{grid-template-columns:1fr}
+  .wall>div{grid-column:1/-1!important}
+  .steps{grid-template-columns:1fr;padding-left:8px}
+  .steps::before{top:0;bottom:0;left:27px;right:auto;width:2px;height:auto}
+  .steps li{padding:4px 0 24px 64px}.steps li::before{left:8px}
+}
+/* mobile */
+@media(max-width:600px){
+  .trio{grid-template-columns:1fr}.trio li,.trio li:nth-child(n){margin-top:0;padding-bottom:20px;border-bottom:1px solid var(--line)}
+  .index a{grid-template-columns:36px 1fr}.index span{grid-column:2}
+  .contact li{grid-template-columns:1fr}
+  .cs section{grid-template-columns:1fr;gap:4px}
+  footer,footer div:last-child{text-align:left}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}html{scroll-behavior:auto}.rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<!-- NAVIGATION -->
+<header class="top">
+  <a href="#home" class="logo">Cencrea Raizza G. Dela Cruz</a>
+  <button id="menuBtn" aria-expanded="false" aria-controls="menu">Menu <span>+</span></button>
+</header>
+<nav id="menu" aria-label="Main menu">
+  <a href="#home"><i>01</i>Home</a>
+  <a href="#purpose"><i>02</i>Purpose</a>
+  <a href="#content"><i>03</i>Content</a>
+  <a href="#education"><i>04</i>Education</a>
+  <a href="#projects"><i>05</i>Projects</a>
+  <a href="#stack"><i>06</i>Tech Stack</a>
+  <a href="#contact"><i>07</i>Contact</a>
+</nav>
+
+<main>
+<!-- 01 HOME -->
+<section id="home" class="hero wrap">
+  <div class="hero-text">
+    <p class="label"> Home</p>
+    <h1>Hello,<br>I'm<br><em>Raizza.</em></h1>
+    <p class="roles">BS Information Technology<br>3rd Year Student<br>Aspiring Web Mobile and App Developer</p>
+    <p class="lead">An Information Technology student exploring software development, system design, databases, and creative digital solutions.</p>
+    <a href="#purpose" class="scroll"> Scroll to Explore</a>
+  </div>
+  <div class="photo">
+    <div class="photo-frame" id="photo">profile</div>
+    <span class="tag t1">BSIT</span><span class="tag t2">Class 2028</span>
+  </div>
+</section>
+
+<!-- 02 PURPOSE -->
+<section id="purpose" class="band">
+  <div class="wrap">
+    <p class="label"> Purpose</p>
+    <h2>Why this<br>portfolio exists?</h2>
+    <div class="two">
+      <p class="statement">This portfolio is a collection of my academic projects, technical skills, learning experiences, and software development work as an Information Technology student.</p>
+      <p>The purpose of this portfolio is to showcase how I apply what I learn in programming, system design, database management, user interface design, and software engineering to create useful digital solutions.</p>
+    </div>
+    <ol class="trio">
+      <li><b>Learn</b>Continuously develop my technical knowledge.</li>
+      <li><b>Build</b>Apply what I learn through actual projects.</li>
+      <li><b>Improve</b>Learn from challenges and improve my solutions.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- 03 CONTENT -->
+<section id="content" class="wrap">
+  <p class="label"> Content</p>
+  <h2>What's inside</h2>
+  <ul class="index">
+    <li><a href="#home"><i>01</i><b>Profile</b><span>Who I am as an IT student.</span></a></li>
+    <li><a href="#education"><i>02</i><b>Education</b><span> A current 3rd year BSIT student.</span></a></li>
+    <li><a href="#projects"><i>03</i><b>Projects</b><span> A portfolio, websites.</span></a></li>
+    <li><a href="#stack"><i>04</i><b>Tech Stack</b><span>HTML, CSS, PHP, MySQL, JAVA SCRIPT</span></a></li>
+    <li><a href="#design"><i>05</i><b>Design</b><span>I design with simplicity and the user in mind—creating clean, 
+      organized, and intuitive interfaces 
+      that are easy to navigate and enjoyable to use..</span></a></li>
+  </ul>
+</section>
+
+<!-- 04 EDUCATION -->
+<section id="education" class="wrap edu">
+  <div>
+    <p class="label"> Education</p>
+    <h2>Education</h2>
+    <p class="degree">Bachelor of Science in Information Technology</p>
+    <p>Nueva Vizcaya State University<br>2024 – Present<br>3rd Year Student</p>
+  </div>
+  <ol class="timeline">
+    <li><time>2024</time><p>Started BSIT</p></li>
+    <li><time>2025</time><p>Developed more programming and system projects</p></li>
+    <li><time>2026</time><p>Continues learning about programming and designing</p></li>
+  </ol>
+</section>
+
+<!-- 05 PROJECTS -->
+<section id="projects" class="band dark">
+  <div class="wrap">
+    <p class="label"> Projects</p>
+    <h2>My projects</h2>
+    <div class="proj-grid" id="projGrid"></div>
+  </div>
+</section>
+
+<!-- 06 PROJECT SHOWCASE -->
+<section id="showcase" class="wrap">
+  <p class="label"> Project Showcase</p>
+  <h2>Behind the<br>project</h2>
+  <p class="lead">Every project above opens into a full case study: the problem, the people it serves, how it was designed and built, and what it achieved.</p>
+  <div class="chips" id="showChips"></div>
+</section>
+
+<!-- 07 DESIGN / UI -->
+<section id="design" class="band">
+  <div class="wrap">
+    <p class="label"> Design / UI</p>
+    <h2>Designed with purpose</h2>
+    <p class="statement">Good software is not only about functionality. The interface should also be clear, consistent, accessible, and easy to use.</p>
+    <div class="principles">
+      <div><b>Clarity</b>Information should be easy to understand.</div>
+      <div><b>Consistency</b>Colors, typography, buttons, and components should follow a consistent design system.</div>
+      <div><b>Usability</b>Users should be able to navigate and interact with the system easily.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 TECH STACK -->
+<section id="stack" class="wrap">
+  <p class="label"> Tech Stack</p>
+  <h2>My<br>tech stack</h2>
+  <p class="hint">Hover or tap a technology to see what I use it for.</p>
+  <div class="wall">
+    <div><h3>Front-end</h3>
+      <button data-tip="Structure of every page I build.">HTML</button><button data-tip="Layout, colors, and responsive design.">CSS</button>
+      <button data-tip="Interactivity and form handling.">JavaScript</button><button data-tip="Quick responsive grids and components.">Bootstrap</button></div>
+    <div><h3>Back-end</h3><button data-tip="Server logic, sessions, and form processing.">PHP</button></div>
+    <div><h3>Database</h3><button data-tip="Stores users, requests, and records.">MySQL</button></div>
+    <div><h3>Tools</h3>
+      <button data-tip="My main code editor.">Visual Studio Code</button><button data-tip="Local Apache and MySQL server for testing.">XAMPP</button>
+      <button data-tip="Version control and code hosting.">GitHub</button></div>
+    <div><h3>Mobile</h3><button data-tip="Block-based mobile app building.">MIT App Inventor</button></div>
+  </div>
+  <p class="tip" id="tip" aria-live="polite">&nbsp;</p>
+</section>
+
+<!-- 09 PROCESS -->
+<section id="process" class="band dark">
+  <div class="wrap">
+    <p class="label">Software Development Approach</p>
+    <h2>From idea<br>to software</h2>
+    <ol class="steps">
+      <li><b>Plan</b>Identify the goal and scope of the system.</li>
+      <li><b>Analyze</b>Understand the problem and user requirements.</li>
+      <li><b>Design</b>Plan the interface, database, and system structure.</li>
+      <li><b>Develop</b>Build the actual system.</li>
+      <li><b>Test</b>Find and fix errors.</li>
+      <li><b>Deploy</b>Make the system available to users.</li>
+      <li><b>Improve</b>Gather feedback and continue improving the system.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- 10 CONTACT -->
+<section id="contact" class="wrap contact">
+  <p class="label"> Contact</p>
+  <h2>Let's<br>connect.</h2>
+  <ul>
+    <li><span>Email</span><a href="mailto:your@email.com">raizza111605@gmail.com</a></li>
+    <li><span>GitHub</span><a href="https://github.com/" target="_blank" rel="noopener">cncrzz</a></li>
+    <li><span>Facebook</span><a href="https://facebook.com/" target="_blank" rel="noopener">Cencrea Raizza G. Dela Cruz</a></li>
+    <li><span>Instagram</span><a href="https://instagram.com/" target="_blank" rel="noopener">cncr.dlcrz</a></li>
+  </ul>
+  <a href="#home" class="btn">Back to top ↑</a>
+</section>
+</main>
+
+<footer>
+  <div><b>CENCREA RAIZZA G. DELA CRUZ</b><br>Bachelor of Science in Information Technology</div>
+  <div>My Portfolio<br>© 2026</div>
+</footer>
+
+<!-- CASE STUDY MODAL -->
+<div id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle" hidden>
+  <div class="sheet">
+    <button id="close" aria-label="Close case study">Close ×</button>
+    <div id="mBody"></div>
+  </div>
+</div>
+
+<script>
+/* ===== PROJECT DATA — add a new project by copying one block ===== */
+const projects = [
+  {
+    name: "Barangay Document Request System",
+    desc: "A web-based system that allows residents to request barangay documents and monitor the status of their requests.",
+    purpose: "To make the document-request process more organized and convenient.",
+    stack: ["HTML", "CSS", "JavaScript", "PHP", "MySQL"],
+    image: "barangay.jpg", // e.g. "assets/images/barangay.png"
+    problem: "Residents must visit the barangay hall, line up, and wait to find out if a document is ready.",
+    target: "Barangay residents who request documents, and barangay staff who process them.",
+    features: ["Online document request form", "Request status tracking", "Staff dashboard to approve or release requests"],
+    design: "A simple form-first interface with clear status labels so residents always know the next step.",
+    flow: ["Resident", "Request form", "Staff review", "Approved", "Released"],
+    development: "Built with PHP and MySQL, tested locally on XAMPP, then refined after trying it with classmates.",
+    result: "Requests are recorded in one place, which makes processing more organized and easier to follow."
+  }
+];
+
+/* ===== helpers ===== */
+const $ = s => document.querySelector(s);
+const shot = p => `<div class="shot" ${p.image ? `style="background:url('${p.image}') center/cover"` : ""}></div>`;
+const tags = p => `<div class="tags">${p.stack.map(t => `<span>${t}</span>`).join("")}</div>`;
+
+/* ===== build project overview + showcase chips ===== */
+$("#projGrid").innerHTML = projects.map((p, i) => `
+  <button class="proj rv ${i === 0 ? "big" : ""}" data-i="${i}" aria-label="Open case study: ${p.name}">
+    ${shot(p)}
+    <div>
+      <h3>${p.name}</h3>
+      <p>${p.desc}</p>
+      <p><span class="k">Purpose</span>${p.purpose}</p>
+      <span class="k">Tech stack</span>${tags(p)}
+    </div>
+  </button>`).join("");
+$("#showChips").innerHTML = projects.map((p, i) => `<button data-i="${i}">${p.name}</button>`).join("");
+
+/* ===== case study modal ===== */
+const modal = $("#modal");
+let lastFocus;
+function openCase(i) {
+  const p = projects[i];
+  const row = (h, body) => `<section><h4>${h}</h4><div>${body}</div></section>`;
+  $("#mBody").innerHTML = `<div class="cs">
+    <p class="label">Case study</p>
+    <h2 id="mTitle">${p.name}</h2>${shot(p)}<p>${p.desc}</p>
+    ${row("01 Problem", p.problem)}${row("02 Purpose", p.purpose)}${row("03 Target user", p.target)}
+    ${row("04 Features", `<ul>${p.features.map(f => `<li>${f}</li>`).join("")}</ul>`)}
+    ${row("05 Design", p.design + `<div class="flow">${p.flow.map(f => `<span>${f}</span>`).join(" → ")}</div>`)}
+    ${row("06 Tech stack", tags(p))}${row("07 Development", p.development)}${row("08 Result", p.result)}
+  </div>`;
+  lastFocus = document.activeElement;
+  modal.hidden = false;
+  document.body.style.overflow = "hidden";
+  $("#close").focus();
+}
+function closeCase() {
+  modal.hidden = true;
+  document.body.style.overflow = "";
+  if (lastFocus) lastFocus.focus();
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-i]");
+  if (b) openCase(+b.dataset.i);
+  if (e.target === modal) closeCase();
+});
+$("#close").onclick = closeCase;
+
+/* ===== menu ===== */
+const menu = $("#menu"), btn = $("#menuBtn");
+function toggleMenu(open) {
+  menu.classList.toggle("open", open);
+  btn.setAttribute("aria-expanded", open);
+  btn.firstChild.textContent = open ? "Close " : "Menu ";
+  document.body.style.overflow = open ? "hidden" : "";
+}
+btn.onclick = () => toggleMenu(!menu.classList.contains("open"));
+menu.addEventListener("click", e => { if (e.target.closest("a")) toggleMenu(false); });
+
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  if (!modal.hidden) closeCase(); else toggleMenu(false);
+});
+
+/* ===== tech stack tooltip ===== */
+const tip = $("#tip");
+document.querySelectorAll(".wall button").forEach(b => {
+  const show = () => {
+    document.querySelectorAll(".wall .on").forEach(x => x.classList.remove("on"));
+    b.classList.add("on");
+    tip.innerHTML = `<b>${b.textContent}:</b> ${b.dataset.tip}`;
+  };
+  ["mouseenter", "focus", "click"].forEach(ev => b.addEventListener(ev, show));
+});
+
+/* ===== scroll progress ===== */
+addEventListener("scroll", () => {
+  const h = document.documentElement;
+  $("#progress").style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + "%";
+}, { passive: true });
+
+/* ===== scroll reveal (projects only, kept subtle) ===== */
+const io = new IntersectionObserver(es => es.forEach(en => {
+  if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); }
+}), { threshold: .15 });
+document.querySelectorAll(".rv").forEach(el => io.observe(el));
+
+/* ===== profile photo: put your image path here ===== */
+const PHOTO = "pic1.jpg"; // e.g. "assets/images/me.jpg"
+if (PHOTO) { $("#photo").style.backgroundImage = `url('${PHOTO}')`; $("#photo").textContent = ""; }
+</script>
+</body>
+</html>
